@@ -17,18 +17,22 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping
-    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) {
+    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file, @RequestParam("username") String username) {
         try {
-            imageService.saveImage(file);
+            imageService.saveImage(file, username);
             return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Image uploaded and classified successfully\"}");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading image: " + e.getMessage());
+        } catch (com.ia.api.Service.AiServiceException e) {
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("AI Service Error: " + e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<Image>> getAllImages() {
-        List<Image> images = imageService.getAllImages();
+    public ResponseEntity<List<Image>> getAllImages(@RequestParam("username") String username) {
+        List<Image> images = imageService.getImagesByUser(username);
         return ResponseEntity.ok(images);
     }
 }

@@ -33,4 +33,8 @@ public class Image {
     @Lob
     @Column(length = 1000000) // Adjust size as needed
     private byte[] data;
+
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "user_id")
+    private com.ia.api.User.User user;
 }

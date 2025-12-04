@@ -16,8 +16,11 @@ import java.util.Map;
 @Service
 public class AiService {
 
+    @org.springframework.beans.factory.annotation.Value("${ai.api.url}")
+    private String aiApiUrl;
+
     public String classifyImage(MultipartFile image) {
-        String url = "http://127.0.0.1:5000/predict";
+        String url = aiApiUrl;
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -41,12 +44,12 @@ public class AiService {
             Map response = restTemplate.postForObject(url, requestEntity, Map.class);
             if (response != null && response.containsKey("class")) {
                 return (String) response.get("class");
+            } else {
+                throw new AiServiceException("Invalid response from AI service: " + response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error: " + e.getMessage();
+            throw new AiServiceException("Error calling AI service: " + e.getMessage(), e);
         }
-
-        return "Unknown";
     }
 }
