@@ -45,4 +45,23 @@ public class ImageService {
     public List<Image> getImagesByUser(String username) {
         return imageRepository.findByUserUsername(username);
     }
+
+    public void updateClassification(Long id, int classificationNumber) {
+        Image image = imageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Image not found"));
+
+        String classification;
+        switch (classificationNumber) {
+            case 0: classification = "Animales"; break;
+            case 1: classification = "Autos"; break;
+            case 2: classification = "Comida"; break;
+            case 3: classification = "Motos"; break;
+            case 4: classification = "Plantas"; break;
+            case 5: classification = "Ropa"; break;
+            default: throw new RuntimeException("Invalid classification number");
+        }
+
+        image.setClassification(classification);
+        imageRepository.save(image);
+    }
 }

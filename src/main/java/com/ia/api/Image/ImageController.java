@@ -35,4 +35,14 @@ public class ImageController {
         List<Image> images = imageService.getImagesByUser(username);
         return ResponseEntity.ok(images);
     }
+
+    @PutMapping("/{id}/classification")
+    public ResponseEntity<?> updateClassification(@PathVariable Long id, @RequestParam("classification") int classification) {
+        try {
+            imageService.updateClassification(id, classification);
+            return ResponseEntity.ok("{\"message\": \"Classification updated successfully\"}");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
+    }
 }
