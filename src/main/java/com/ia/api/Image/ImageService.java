@@ -64,4 +64,11 @@ public class ImageService {
         image.setClassification(classification);
         imageRepository.save(image);
     }
+
+    public void deleteImage(Long id) {
+        if (!imageRepository.existsById(id)) {
+            throw new RuntimeException("Image not found");
+        }
+        imageRepository.deleteById(id);
+    }
 }
